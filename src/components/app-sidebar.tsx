@@ -1,5 +1,5 @@
-import { Calendar, Home, Inbox, Search, Settings, AudioLines, Captions } from "lucide-react"
-import { SignedIn, UserButton  } from "@clerk/nextjs"
+import { AudioLines, Captions } from "lucide-react";
+import { SignedIn, UserButton } from "@clerk/nextjs";
 
 import {
   Sidebar,
@@ -11,10 +11,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
-import Link from "next/link"
+} from "@/components/ui/sidebar";
+import Link from "next/link";
 
 // Menu items.
 const items = [
@@ -27,12 +25,12 @@ const items = [
     title: "SRT to VTT Converter",
     url: "/dashboard/srt-to-vtt",
     icon: Captions,
-  }
-]
+  },
+];
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="icon" >
+    <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Applications</SidebarGroupLabel>
@@ -41,13 +39,10 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link key={item.title}
-                    href={item.url}
-                    >
+                    <Link key={item.title} href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>
-                    
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -56,10 +51,10 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-        </SidebarFooter>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+      </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
