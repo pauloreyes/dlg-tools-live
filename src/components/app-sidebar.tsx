@@ -1,5 +1,5 @@
 import { AudioLines, Captions } from "lucide-react";
-import { SignedIn, UserButton } from "@clerk/nextjs";
+import { SignedIn, UserButton, UserProfile } from "@clerk/nextjs";
 
 import {
   Sidebar,
@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import CustomUser from "./custom-user";
 
 // Menu items.
 const items = [
@@ -51,9 +52,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
+       <CustomUser />
       </SidebarFooter>
     </Sidebar>
   );
