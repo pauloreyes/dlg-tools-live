@@ -1,5 +1,4 @@
 import { AudioLines, Captions } from "lucide-react";
-import { SignedIn, UserButton, UserProfile } from "@clerk/nextjs";
 
 import {
   Sidebar,
