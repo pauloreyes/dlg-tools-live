@@ -1,4 +1,3 @@
-import { GalleryVerticalEnd } from "lucide-react"
 import { SignIn } from "@clerk/nextjs"
 
 export default function LoginPage() {
