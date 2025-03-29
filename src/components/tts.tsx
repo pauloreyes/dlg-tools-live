@@ -16,10 +16,6 @@ const TTS = () => {
 	>([]);
 	const audioRef = useRef<HTMLAudioElement | null>(null);
 
-	interface SpeedChangeEvent {
-		newValue: number[];
-	}
-
 	const handleSpeedChange = (newValue: number[]): void => {
 		setSpeedSpeech(newValue[0]);
 		console.log("Slider value changed:", newValue[0]);
