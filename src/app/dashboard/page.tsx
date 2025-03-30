@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
 export default function Dashboard() {
-  return (
-    <div>
-      <h1>Select an application on the left.</h1>
-    </div>
-  );
+	return (
+		<div className='flex flex-col items-center justify-center h-screen'>
+			<h1>Select an application on the left.</h1>
+		</div>
+	);
 }
