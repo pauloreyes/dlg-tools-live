@@ -114,44 +114,46 @@ const TTS = () => {
 	};
 
 	return (
-		<div className='bg-white p-6 rounded-lg shadow-md'>
+		<div className='bg-white p-6 rounded-lg shadow-md w-[60%] mx-auto'>
 			<div className='space-y-4'>
 				<div>
-					<label className='block text-sm font-medium text-gray-700 mb-2'>
+					<label className='block text-sm font-medium text-gray-700 mb-2 text-left'>
 						Select VO Actor
 					</label>
-					<select
-						value={selectedVoice}
-						onChange={(e) => setSelectedVoice(e.target.value)}
-						className='w-full p-2 border border-gray-300 rounded-md'
-					>
-						{voices.map((voice) => (
-							<option key={voice.voice_id} value={voice.voice_id}>
-								{voice.name}
-							</option>
-						))}
-					</select>
+					<div className='w-1/2'>
+						<select
+							value={selectedVoice}
+							onChange={(e) => setSelectedVoice(e.target.value)}
+							className='w-full p-2 border border-gray-300 rounded-md' // select element takes full width of parent
+						>
+							{voices.map((voice) => (
+								<option key={voice.voice_id} value={voice.voice_id}>
+									{voice.name}
+								</option>
+							))}
+						</select>
+					</div>
 				</div>
 
 				<div>
-					<label className='block text-sm font-medium text-gray-700 mb-2'>
+					<label className='block text-sm font-medium text-gray-700 mb-2 text-left'>
 						Enter Text
 					</label>
 					<textarea
 						value={text}
 						onChange={(e) => setText(e.target.value)}
 						placeholder='Enter text to generate audio'
-						className='w-full p-2 border border-gray-300 rounded-md'
+						className='w-full p-2 border border-gray-300 rounded-md h-32'
 					/>
 				</div>
 
 				{error && <div className='text-red-500 text-sm'>{error}</div>}
 
-				<div className='flex gap-2'>
+				<div className='flex justify-center'>
 					<button
 						onClick={handleGenerateAudio}
 						disabled={isGenerating || !text.trim()}
-						className={`flex-1 px-4 py-2 rounded-full text-white ${
+						className={`px-10 py-1 text-lg rounded-full text-white ${
 							isGenerating || !text.trim() ? "bg-gray-400" : "bg-blue-500"
 						}`}
 					>
@@ -159,19 +161,21 @@ const TTS = () => {
 					</button>
 				</div>
 
-				<div className='flex items-center'>
-					<span className='mr-2'>Speed</span>
-					<div className='flex-grow'>
-						<Slider
-							defaultValue={[33]}
-							min={70}
-							max={120}
-							step={1}
-							value={[speedSpeech]}
-							onValueChange={handleSpeedChange}
-						/>
+				<div className='flex justify-center'>
+					<div className='flex items-center w-[60%]'>
+						<span className='mr-2'>Speed</span>
+						<div className='flex-grow'>
+							<Slider
+								defaultValue={[33]}
+								min={70}
+								max={120}
+								step={1}
+								value={[speedSpeech]}
+								onValueChange={handleSpeedChange}
+							/>
+						</div>
+						<span className='ml-2'>{speedSpeech}</span>
 					</div>
-					<span className='ml-2'>{speedSpeech}</span>
 				</div>
 
 				<div>
