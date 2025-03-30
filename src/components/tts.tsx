@@ -114,153 +114,164 @@ const TTS = () => {
 	};
 
 	return (
-		<div className='bg-white p-6 rounded-lg shadow-md w-[60%] mx-auto'>
-			<div className='space-y-4'>
-				<div>
-					<label className='block text-sm font-medium text-gray-700 mb-2 text-left'>
-						Select VO Actor
-					</label>
-					<div className='w-1/2'>
-						<select
-							value={selectedVoice}
-							onChange={(e) => setSelectedVoice(e.target.value)}
-							className='w-full p-2 border border-gray-300 rounded-md' // select element takes full width of parent
-						>
-							{voices.map((voice) => (
-								<option key={voice.voice_id} value={voice.voice_id}>
-									{voice.name}
-								</option>
-							))}
-						</select>
-					</div>
-				</div>
+		<div className='bg-white p-6 rounded-lg shadow-md w-[80%] mx-auto'>
+			<div className='flex gap-6'>
+				<div className='w-1/2'>
+					<div className='space-y-4'>
+						<div>
+							<label className='block text-sm font-medium text-gray-700 mb-2 text-left'>
+								Select VO Actor
+							</label>
+							<div className='w-1/2'>
+								<select
+									value={selectedVoice}
+									onChange={(e) => setSelectedVoice(e.target.value)}
+									className='w-full p-2 border border-gray-300 rounded-md'
+								>
+									{voices.map((voice) => (
+										<option key={voice.voice_id} value={voice.voice_id}>
+											{voice.name}
+										</option>
+									))}
+								</select>
+							</div>
+						</div>
 
-				<div>
-					<label className='block text-sm font-medium text-gray-700 mb-2 text-left'>
-						Enter Text
-					</label>
-					<textarea
-						value={text}
-						onChange={(e) => setText(e.target.value)}
-						placeholder='Enter text to generate audio'
-						className='w-full p-2 border border-gray-300 rounded-md h-32'
-					/>
-				</div>
-
-				{error && <div className='text-red-500 text-sm'>{error}</div>}
-
-				<div className='flex justify-center'>
-					<button
-						onClick={handleGenerateAudio}
-						disabled={isGenerating || !text.trim()}
-						className={`px-10 py-1 text-lg rounded-full text-white ${
-							isGenerating || !text.trim() ? "bg-gray-400" : "bg-blue-500"
-						}`}
-					>
-						{isGenerating ? "Generating..." : "Generate Audio"}
-					</button>
-				</div>
-
-				<div className='flex justify-center'>
-					<div className='flex items-center w-[60%]'>
-						<span className='mr-2'>Speed</span>
-						<div className='flex-grow'>
-							<Slider
-								defaultValue={[33]}
-								min={70}
-								max={120}
-								step={1}
-								value={[speedSpeech]}
-								onValueChange={handleSpeedChange}
+						<div>
+							<label className='block text-sm font-medium text-gray-700 mb-2 text-left'>
+								Enter Text
+							</label>
+							<textarea
+								value={text}
+								onChange={(e) => setText(e.target.value)}
+								placeholder='Enter text to generate audio'
+								className='w-full p-2 border border-gray-300 rounded-md h-32'
 							/>
 						</div>
-						<span className='ml-2'>{speedSpeech}</span>
+
+						{error && <div className='text-red-500 text-sm'>{error}</div>}
+
+						<div className='flex justify-center'>
+							<button
+								onClick={handleGenerateAudio}
+								disabled={isGenerating || !text.trim()}
+								className={`px-10 py-1 text-lg rounded-full text-white ${
+									isGenerating || !text.trim() ? "bg-gray-400" : "bg-blue-500"
+								}`}
+							>
+								{isGenerating ? "Generating..." : "Generate Audio"}
+							</button>
+						</div>
+
+						<div className='flex justify-center'>
+							<div className='flex items-center w-[60%]'>
+								<span className='mr-2'>Speed</span>
+								<div className='flex-grow'>
+									<Slider
+										defaultValue={[33]}
+										min={70}
+										max={120}
+										step={1}
+										value={[speedSpeech]}
+										onValueChange={handleSpeedChange}
+									/>
+								</div>
+								<span className='ml-2'>{speedSpeech}</span>
+							</div>
+						</div>
+
+						<div>
+							<audio
+								ref={audioRef}
+								controls
+								src={audioUrl || ""}
+								className='w-full'
+							/>
+						</div>
 					</div>
 				</div>
 
-				<div>
-					<audio ref={audioRef} controls src={audioUrl || ""} className='w-full' />
-				</div>
-
-				{history.length > 0 && (
-					<div className='mt-4'>
-						<h3 className='text-sm font-medium text-gray-700 mb-2'>History</h3>
-						<ul className='space-y-2'>
-							{history.map((item, index) => {
-								if (!isValidBase64(item.audioBase64)) {
-									console.error("Invalid base64 audio data in history");
-									return null;
-								}
-								const audioBlob = new Blob(
-									[
-										Uint8Array.from(atob(item.audioBase64), (c) =>
-											c.charCodeAt(0)
-										),
-									],
-									{ type: "audio/mpeg" }
-								);
-								const audioUrl = URL.createObjectURL(audioBlob);
-								return (
-									<li
-										key={index}
-										className='flex justify-between items-center p-2 border rounded-md'
-									>
-										<span className='text-sm flex-1' title={item.text}>
-											{item.voiceName}: {item.text.substring(0, 30)}...
-										</span>
-										<div className='flex items-center gap-2'>
-											<button
-												onClick={() => {
-													if (audioRef.current) {
-														if (audioRef.current.src === audioUrl) {
-															if (audioRef.current.paused) {
-																audioRef.current.play();
+				<div className='w-1/2 overflow-y-auto max-h-[500px]'>
+					{history.length > 0 && (
+						<div className='mt-4'>
+							<h3 className='text-sm font-medium text-gray-700 mb-2'>History</h3>
+							<ul className='space-y-2'>
+								{history.map((item, index) => {
+									if (!isValidBase64(item.audioBase64)) {
+										console.error("Invalid base64 audio data in history");
+										return null;
+									}
+									const audioBlob = new Blob(
+										[
+											Uint8Array.from(atob(item.audioBase64), (c) =>
+												c.charCodeAt(0)
+											),
+										],
+										{ type: "audio/mpeg" }
+									);
+									const audioUrl = URL.createObjectURL(audioBlob);
+									return (
+										<li
+											key={index}
+											className='flex justify-between items-center p-2 border rounded-md'
+										>
+											<span className='text-sm flex-1' title={item.text}>
+												{item.voiceName}: {item.text.substring(0, 30)}...
+											</span>
+											<div className='flex items-center gap-2'>
+												<button
+													onClick={() => {
+														if (audioRef.current) {
+															if (audioRef.current.src === audioUrl) {
+																if (audioRef.current.paused) {
+																	audioRef.current.play();
+																} else {
+																	audioRef.current.pause();
+																}
 															} else {
-																audioRef.current.pause();
+																audioRef.current.src = audioUrl;
+																audioRef.current.play();
 															}
-														} else {
-															audioRef.current.src = audioUrl;
-															audioRef.current.play();
 														}
-													}
-												}}
-												className='px-2 py-1 bg-blue-500 text-white rounded-md'
-											>
-												<svg
-													xmlns='http://www.w3.org/2000/svg'
-													viewBox='0 0 24 24'
-													fill='currentColor'
-													className='w-6 h-6'
+													}}
+													className='px-2 py-1 bg-blue-500 text-white rounded-md'
 												>
-													<path d='M15 6.75a.75.75 0 0 0-.75.75V18a.75.75 0 0 0 .75.75h.75a.75.75 0 0 0 .75-.75V7.5a.75.75 0 0 0-.75-.75H15ZM20.25 6.75a.75.75 0 0 0-.75.75V18c0 .414.336.75.75.75H21a.75.75 0 0 0 .75-.75V7.5a.75.75 0 0 0-.75-.75h-.75ZM5.055 7.06C3.805 6.347 2.25 7.25 2.25 8.69v8.122c0 1.44 1.555 2.343 2.805 1.628l7.108-4.061c1.26-.72 1.26-2.536 0-3.256L5.055 7.061Z' />
-												</svg>
-											</button>
-											<a
-												href={audioUrl}
-												download={`audio_${index}.mp3`}
-												className='px-2 py-1 bg-green-500 text-white rounded-md'
-											>
-												<svg
-													xmlns='http://www.w3.org/2000/svg'
-													viewBox='0 0 24 24'
-													fill='currentColor'
-													className='size-6'
+													<svg
+														xmlns='http://www.w3.org/2000/svg'
+														viewBox='0 0 24 24'
+														fill='currentColor'
+														className='w-6 h-6'
+													>
+														<path d='M15 6.75a.75.75 0 0 0-.75.75V18a.75.75 0 0 0 .75.75h.75a.75.75 0 0 0 .75-.75V7.5a.75.75 0 0 0-.75-.75H15ZM20.25 6.75a.75.75 0 0 0-.75.75V18c0 .414.336.75.75.75H21a.75.75 0 0 0 .75-.75V7.5a.75.75 0 0 0-.75-.75h-.75ZM5.055 7.06C3.805 6.347 2.25 7.25 2.25 8.69v8.122c0 1.44 1.555 2.343 2.805 1.628l7.108-4.061c1.26-.72 1.26-2.536 0-3.256L5.055 7.061Z' />
+													</svg>
+												</button>
+												<a
+													href={audioUrl}
+													download={`audio_${index}.mp3`}
+													className='px-2 py-1 bg-green-500 text-white rounded-md'
 												>
-													<path d='M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375Z' />
-													<path
-														fill-rule='evenodd'
-														d='m3.087 9 .54 9.176A3 3 0 0 0 6.62 21h10.757a3 3 0 0 0 2.995-2.824L20.913 9H3.087ZM12 10.5a.75.75 0 0 1 .75.75v4.94l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 1 1 1.06-1.06l1.72 1.72v-4.94a.75.75 0 0 1 .75-.75Z'
-														clip-rule='evenodd'
-													/>
-												</svg>
-											</a>
-										</div>
-									</li>
-								);
-							})}
-						</ul>
-					</div>
-				)}
+													<svg
+														xmlns='http://www.w3.org/2000/svg'
+														viewBox='0 0 24 24'
+														fill='currentColor'
+														className='size-6'
+													>
+														<path d='M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375Z' />
+														<path
+															fill-rule='evenodd'
+															d='m3.087 9 .54 9.176A3 3 0 0 0 6.62 21h10.757a3 3 0 0 0 2.995-2.824L20.913 9H3.087ZM12 10.5a.75.75 0 0 1 .75.75v4.94l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 1 1 1.06-1.06l1.72 1.72v-4.94a.75.75 0 0 1 .75-.75Z'
+															clip-rule='evenodd'
+														/>
+													</svg>
+												</a>
+											</div>
+										</li>
+									);
+								})}
+							</ul>
+						</div>
+					)}
+				</div>
 			</div>
 		</div>
 	);
